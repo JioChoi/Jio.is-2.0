@@ -17,6 +17,25 @@ body {
 }
 
 /* Effect */
+#loading {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+
+	background-color: #000000;
+	z-index: 1000;
+
+	opacity: 1;
+	transition: opacity 1s ease-in-out;
+}
+
+#loading.hidden {
+	opacity: 0;
+	pointer-events: none;
+}
+
 #pixel-line {
 	position: absolute;
 
@@ -28,7 +47,7 @@ body {
 
 	background-image: url('../images/pixel.png');
 	background-repeat: repeat;
-	z-index: 1000;
+	z-index: 100;
 
 	opacity: 0.4;
 }
@@ -43,7 +62,7 @@ body {
 	overflow: scroll;
 
 	filter: blur(2px) saturate(1.2) contrast(1.2) brightness(1.1);
-	box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.5);
+	box-shadow: inset 0 0 250px rgba(0, 0, 0, 0.7);
 }
 
 #scanline {
@@ -76,7 +95,6 @@ body {
 }
 
 /* Body */
-
 #intro {
 	display: flex;
 	flex-direction: column;
@@ -86,10 +104,6 @@ body {
 	height: 100vh;
 }
 
-#intro div {
-	width: 800px;
-}
-
 #intro h1 {
 	position: relative;
 	display: block;
@@ -97,4 +111,20 @@ body {
 	font-size: 42px;
 	font-family: 'PixelSplitter';
 	font-weight: 100;
+}
+
+/* Mobile */
+@media only screen and (max-width: 600px) {
+	#crt {
+		filter: blur(1px) saturate(1.2) contrast(1.2) brightness(1.1);
+		box-shadow: inset 0 0 250px rgba(0, 0, 0, 0.7);
+	}
+
+	.glow-green {
+		text-shadow: 0 0 10px rgba(55, 255, 0, 0.8);
+	}
+
+	#intro h1 {
+		font-size: 18px;
+	}
 }
