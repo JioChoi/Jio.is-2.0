@@ -67,7 +67,7 @@ function scrollAnimation() {
 
 		document.getElementById("info").style.filter = "blur(" + Math.max((5 - (transition * 3) * 5), 0) + "px)";
 		document.getElementById("info").style.opacity = transition * 3;
-		document.getElementById("info").style.transform = "translateY(" + Math.max((transition * 3) * -5 + 5, 0) + "vh)";
+		document.getElementById("info").style.transform = "scale(" + (1 + Math.max(1 - (transition * 3) * 1, 0)) + ")";
 	}
 	else {
 		document.getElementById("info").style.opacity = 0;
@@ -77,7 +77,7 @@ function scrollAnimation() {
 	if (page == 3) {
 		document.getElementById("info").style.filter = "blur(" + (5 - Math.max((5 - (transition * 3) * 5), 0)) + "px)";
 		document.getElementById("info").style.opacity = 1 - transition * 3;
-		document.getElementById("info").style.transform = "translateY(" + Math.max((1 - transition * 3) * -5 + 5, 0) + "vh)";
+		document.getElementById("info").style.transform = "scale(" + (1 + (Math.min((transition * 3), 1)) * 1) + ")";
 	}
 }
 
