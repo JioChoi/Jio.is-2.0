@@ -1,11 +1,34 @@
 window.onload = function () {
 	initTypeWriter();
+	initItems();
 	
 	addEventListener("scroll", scrollAnimation);
 	scrollAnimation();
 
 	// Hide loading screen
 	document.getElementById("loading").classList.add("hidden");
+
+	// Begin down arrow animation
+	setTimeout(() => {
+		document.getElementById("down").classList.add("show");
+		setTimeout(() => {
+			document.getElementById("down").classList.add("animate");
+		}, 500);
+	}, 1000);
+}
+
+function initItems() {
+	var items = document.getElementsByClassName("item");
+	for (var i = 0; i < items.length; i++) {
+		items[i].addEventListener("mouseover", function () {
+			var detail = this.getElementsByClassName("detail")[0];
+			detail.style.opacity = 1;
+		});
+		items[i].addEventListener("mouseout", function () {
+			var detail = this.getElementsByClassName("detail")[0];
+			detail.style.opacity = 0;
+		});
+	}
 }
 
 function scrollAnimation() {
@@ -42,6 +65,7 @@ function scrollAnimation() {
 		document.getElementById("projects").style.opacity = 1;
 		type(document.getElementById("projects"), 100);
 
+		document.getElementById("info").style.filter = "blur(" + Math.max((5 - (transition * 3) * 5), 0) + "px)";
 		document.getElementById("info").style.opacity = transition * 3;
 		document.getElementById("info").style.transform = "translateY(" + Math.max((transition * 3) * -5 + 5, 0) + "vh)";
 	}
@@ -51,6 +75,7 @@ function scrollAnimation() {
 
 	// Hide Projects
 	if (page == 3) {
+		document.getElementById("info").style.filter = "blur(" + (5 - Math.max((5 - (transition * 3) * 5), 0)) + "px)";
 		document.getElementById("info").style.opacity = 1 - transition * 3;
 		document.getElementById("info").style.transform = "translateY(" + Math.max((1 - transition * 3) * -5 + 5, 0) + "vh)";
 	}
