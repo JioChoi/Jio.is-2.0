@@ -1,8 +1,8 @@
 window.onload = function () {
 	initTypeWriter();
 	
-	addEventListener("scroll", scrollAnimation);
-	scrollAnimation();
+	//addEventListener("scroll", scrollAnimation);
+	//scrollAnimation();
 
 	// Hide loading screen
 	document.getElementById("loading").classList.add("hidden");
@@ -28,8 +28,8 @@ function scrollAnimation() {
 
 	// Who am I
 	if (page == 1) {
-		document.getElementById("whoami").style.opacity = transition * 2;
-		type(document.getElementById("whoami"), transition * 100);
+		document.getElementById("whoami").style.opacity = transition * 4;
+		type(document.getElementById("whoami"), transition * 150);
 	}
 	else {
 		document.getElementById("whoami").style.opacity = 0;
@@ -38,6 +38,12 @@ function scrollAnimation() {
 	// Who am I
 	if (page == 2) {
 		document.getElementById("whoami").style.opacity = 1;
+		type(document.getElementById("whoami"), 100);
+
+		document.getElementById("info").style.opacity = transition * 2;
+	}
+	else {
+		document.getElementById("info").style.opacity = 0;
 	}
 }
 
