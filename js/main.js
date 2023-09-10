@@ -2,6 +2,7 @@ window.onload = function () {
 	initTypeWriter();
 	
 	addEventListener("scroll", scrollAnimation);
+	scrollAnimation();
 
 	// Hide loading screen
 	document.getElementById("loading").classList.add("hidden");
