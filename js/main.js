@@ -1,8 +1,8 @@
 window.onload = function () {
 	initTypeWriter();
 	
-	//addEventListener("scroll", scrollAnimation);
-	//scrollAnimation();
+	addEventListener("scroll", scrollAnimation);
+	scrollAnimation();
 
 	// Hide loading screen
 	document.getElementById("loading").classList.add("hidden");
@@ -16,6 +16,8 @@ function scrollAnimation() {
 	var page = Math.floor(scroll / pageHeight);
 	var transition = (scroll % pageHeight) / pageHeight;
 
+	var transitionEase = Math.pow(transition, 2);
+
 	// Intro
 	if (page == 0) {
 		document.getElementById("intro").style.opacity = 1 - transition;
@@ -26,24 +28,31 @@ function scrollAnimation() {
 		document.getElementById("intro").style.transform = "translateY(-10vh)";
 	}
 
-	// Who am I
+	// Type Projects
 	if (page == 1) {
-		document.getElementById("whoami").style.opacity = transition * 4;
-		type(document.getElementById("whoami"), transition * 150);
+		document.getElementById("projects").style.opacity = transition * 4;
+		type(document.getElementById("projects"), transition * 150);
 	}
 	else {
-		document.getElementById("whoami").style.opacity = 0;
+		document.getElementById("projects").style.opacity = 0;
 	}
 
-	// Who am I
+	// Projects
 	if (page == 2) {
-		document.getElementById("whoami").style.opacity = 1;
-		type(document.getElementById("whoami"), 100);
+		document.getElementById("projects").style.opacity = 1;
+		type(document.getElementById("projects"), 100);
 
-		document.getElementById("info").style.opacity = transition * 2;
+		document.getElementById("info").style.opacity = transition * 3;
+		document.getElementById("info").style.transform = "translateY(" + Math.max((transition * 3) * -5 + 5, 0) + "vh)";
 	}
 	else {
 		document.getElementById("info").style.opacity = 0;
+	}
+
+	// Hide Projects
+	if (page == 3) {
+		document.getElementById("info").style.opacity = 1 - transition * 3;
+		document.getElementById("info").style.transform = "translateY(" + Math.max((1 - transition * 3) * -5 + 5, 0) + "vh)";
 	}
 }
 
