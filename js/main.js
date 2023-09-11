@@ -35,7 +35,7 @@ function scrollAnimation() {
 	var scroll = window.scrollY;
 	var height = window.innerHeight;
 
-	var pageHeight = (height / 2);
+	var pageHeight = (height * 4);
 	var page = Math.floor(scroll / pageHeight);
 	var transition = (scroll % pageHeight) / pageHeight;
 
