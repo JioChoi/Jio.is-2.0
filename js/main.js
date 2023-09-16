@@ -35,16 +35,15 @@ function scrollAnimation() {
 	var scroll = window.scrollY;
 	var height = window.innerHeight;
 
-	var pageHeight = (height * 4);
+	var pageHeight = (height * 2);
 	var page = Math.floor(scroll / pageHeight);
 	var transition = (scroll % pageHeight) / pageHeight;
-
-	var transitionEase = Math.pow(transition, 2);
+	var endtransition = 1 - transition;
 
 	// Intro
 	if (page == 0) {
 		document.getElementById("intro").style.opacity = 1 - transition;
-		document.getElementById("intro").style.transform = "translateY(" + (transition * -10) + "vh)";
+		document.getElementById("intro").style.transform = "translateY(" + (transition * -100) + "vh)";
 	}
 	else {
 		document.getElementById("intro").style.opacity = 0;
@@ -55,6 +54,9 @@ function scrollAnimation() {
 	if (page == 1) {
 		document.getElementById("projects").style.opacity = transition * 4;
 		type(document.getElementById("projects"), transition * 150);
+
+		document.getElementById("projects").style.transform = "translateY(" + (Math.min(transition * -100 + 70, 0)) + "vh)";
+		document.getElementById("projects").style.opacity = 1 - Math.max((transition - 0.7) / 0.3, 0);
 	}
 	else {
 		document.getElementById("projects").style.opacity = 0;
@@ -62,12 +64,23 @@ function scrollAnimation() {
 
 	// Projects
 	if (page == 2) {
-		document.getElementById("projects").style.opacity = 1;
 		type(document.getElementById("projects"), 100);
 
-		document.getElementById("info").style.filter = "blur(" + Math.max((5 - (transition * 3) * 5), 0) + "px)";
-		document.getElementById("info").style.opacity = transition * 3;
-		document.getElementById("info").style.transform = "scale(" + (1 + Math.max(1 - (transition * 3) * 1, 0)) + ")";
+		document.getElementById("info").style.filter = "blur(" + Math.max((5 - (transition * 5) * 5), 0) + "px)";
+		document.getElementById("info").style.opacity = transition * 5;
+		document.getElementById("info").style.transform = "scale(" + (1 + Math.max(1 - (transition * 5) * 1, 0)) + ")";
+	
+		var endtransition = Math.min(transition * 5 - 4, 1) / 5;
+
+		if (endtransition > 0) {
+			document.getElementById("info").style.filter = "blur(" + (5 - Math.max((5 - (endtransition * 5) * 5), 0)) + "px)";
+			document.getElementById("info").style.opacity = 1 - endtransition * 5;
+			document.getElementById("info").style.transform = "scale(" + (1 + (Math.min((endtransition * 5), 1)) * 1) + ")";
+
+			document.getElementById("skills").style.opacity = endtransition * 4;
+
+			type(document.getElementById("skills"), (endtransition) * 150 - 60);
+		}
 	}
 	else {
 		document.getElementById("info").style.opacity = 0;
@@ -75,9 +88,10 @@ function scrollAnimation() {
 
 	// Hide Projects
 	if (page == 3) {
-		document.getElementById("info").style.filter = "blur(" + (5 - Math.max((5 - (transition * 3) * 5), 0)) + "px)";
-		document.getElementById("info").style.opacity = 1 - transition * 3;
-		document.getElementById("info").style.transform = "scale(" + (1 + (Math.min((transition * 3), 1)) * 1) + ")";
+
+	}
+	else {
+		document.getElementById("skills").style.opacity = 0;
 	}
 }
 
