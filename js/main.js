@@ -1,3 +1,5 @@
+var previousPage = 0;
+
 window.onload = function () {
 	initTypeWriter();
 	initItems();
@@ -35,64 +37,65 @@ function scrollAnimation() {
 	var scroll = window.scrollY;
 	var height = window.innerHeight;
 
-	var pageHeight = (height * 2);
+	var pageHeight = (height / 2);
 	var page = Math.floor(scroll / pageHeight);
 	var transition = (scroll % pageHeight) / pageHeight;
-	var endtransition = 1 - transition;
+	var transition50up = Math.min((scroll % pageHeight) / pageHeight, 0.5) * 2;
+	var transition50down = Math.max((scroll % pageHeight) / pageHeight - 0.5, 0) * 2;
+	var pageChange = false;
 
-	// Intro
+	if (previousPage != page) {
+		pageChange = true;
+	}
+
+	console.log(page, transition);
+
+	/* Default */
+	document.getElementById("intro").style.opacity = 0;
+	document.getElementById("projects-title").style.opacity = 0;
+	document.getElementById("background").style.opacity = 0;
+
+	/* Hiding Intro */
 	if (page == 0) {
 		document.getElementById("intro").style.opacity = 1 - transition;
-		document.getElementById("intro").style.transform = "translateY(" + (transition * -100) + "vh)";
-	}
-	else {
-		document.getElementById("intro").style.opacity = 0;
-		document.getElementById("intro").style.transform = "translateY(-10vh)";
 	}
 
-	// Type Projects
+	/* Showing Projects Title */
 	if (page == 1) {
-		document.getElementById("projects").style.opacity = transition * 4;
-		type(document.getElementById("projects"), transition * 150);
+		document.getElementById("projects-title").style.opacity = transition50up;
+		type(document.getElementById("projects-title"), transition * 100);
 
-		document.getElementById("projects").style.transform = "translateY(" + (Math.min(transition * -100 + 70, 0)) + "vh)";
-		document.getElementById("projects").style.opacity = 1 - Math.max((transition - 0.7) / 0.3, 0);
-	}
-	else {
-		document.getElementById("projects").style.opacity = 0;
+		document.getElementById("projects-title").style.transform = "translateY(" + (10 - transition * 10) + "vh)";
 	}
 
-	// Projects
+	/* Hiding Projects Title */
 	if (page == 2) {
-		type(document.getElementById("projects"), 100);
+		type(document.getElementById("projects-title"), 100);
+		document.getElementById("projects-title").style.opacity = 1 - transition50down;
 
-		document.getElementById("info").style.filter = "blur(" + Math.max((5 - (transition * 5) * 5), 0) + "px)";
-		document.getElementById("info").style.opacity = transition * 5;
-		document.getElementById("info").style.transform = "scale(" + (1 + Math.max(1 - (transition * 5) * 1, 0)) + ")";
-	
-		var endtransition = Math.min(transition * 5 - 4, 1) / 5;
-
-		if (endtransition > 0) {
-			document.getElementById("info").style.filter = "blur(" + (5 - Math.max((5 - (endtransition * 5) * 5), 0)) + "px)";
-			document.getElementById("info").style.opacity = 1 - endtransition * 5;
-			document.getElementById("info").style.transform = "scale(" + (1 + (Math.min((endtransition * 5), 1)) * 1) + ")";
-
-			document.getElementById("skills").style.opacity = endtransition * 4;
-
-			type(document.getElementById("skills"), (endtransition) * 150 - 60);
-		}
-	}
-	else {
-		document.getElementById("info").style.opacity = 0;
+		document.getElementById("projects-title").style.transform = "translateY(" + (-transition * 15) + "vh)";
 	}
 
-	// Hide Projects
+	/* Showing Gest! */
 	if (page == 3) {
+		if(pageChange) {
+			document.getElementById("gest-video").currentTime = 14.5;
+			document.getElementById("gest-video").play();
+		}
 
+		document.getElementById("background").style.opacity = transition50up;
 	}
-	else {
-		document.getElementById("skills").style.opacity = 0;
+
+	/* Hiding Gest! */
+	if (page == 4) {
+		document.getElementById("background").style.opacity = 1 - transition50down;
 	}
+
+	if(page != 3 && page != 4) {
+		document.getElementById("gest-video").pause();
+	}
+
+	previousPage = page;
 }
 
 function isOnScreen(element) {
