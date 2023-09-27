@@ -1,13 +1,50 @@
 var previousPage = 0;
 var page = 0;
 
-const word_offset = {x: -10, y: -10};
+const skills = [
+	{type: "plang", word: "C++", size: 1},
+	{type: "lang", word: "English", size: 1},
+	{ type: "prog", word: "Photoshop", size: 1 },
+	
+	
+	{type: "plang", word: "JAVA", size: 2},
+	{type: "plang", word: "SDL2", size: 2},
+	{type: "plang", word: "C", size: 2},
+	{type: "plang", word: "HTML", size: 2},
+	{type: "plang", word: "CSS", size: 2},
+	{type: "plang", word: "JAVASCRIPT", size: 2},
+	{type: "plang", word: "Node.js", size: 2},
+	{type: "plang", word: "GDI+", size: 2},
+	{type: "plang", word: "Windows API", size: 2},
+	{type: "plang", word: "MFC", size: 2},
+	{type: "plang", word: "MATLAB", size: 2},
+	{type: "lang", word: "Japanese", size: 2},
+	{type: "lang", word: "Chinese", size: 2},
+	{type: "lang", word: "Korean", size: 2},
+	
+	{type: "plang", word: "IIS", size: 3},
+	{type: "plang", word: "Apache 2", size: 3},
+	{type: "plang", word: "MySQL", size: 3},
+	{type: "plang", word: "PHP", size: 3},
+	{type: "plang", word: "OpenGL", size: 3},
+	{type: "plang", word: "GLSL", size: 3},
+	{type: "plang", word: "Arduino", size: 3},
+	
+	{ type: "prog", word: "After Effects", size: 3 },
+	{ type: "prog", word: "Premiere Pro", size: 3 },
+	{ type: "prog", word: "Adobe XD", size: 3 },
+	{ type: "prog", word: "Ableton Live", size: 3 },
+	{ type: "prog", word: "FL Studio", size: 3 },
+];
+
+const word_offset_same = {x: 10, y: 10};
+const word_offset = {x: 10, y: 10};
 
 window.onload = function () {
 	initTypeWriter();
 	initItems();
 
-	initWordbox();
+	createOrbit();
 
 	addEventListener("scroll", scrollAnimation);
 	scrollAnimation();
@@ -24,6 +61,56 @@ window.onload = function () {
 	}, 1000);
 }
 
+function getDistance(point1, point2) {
+	return Math.sqrt(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2));
+}
+
+function createOrbit() {
+	var box = document.getElementById("wordbox");
+	var boxRect = box.getBoundingClientRect();
+
+	var center = { x: boxRect.width / 2, y: boxRect.height / 2 };
+	var placedWords = [];
+
+	for (var i = 0; i < skills.length; i++) {
+		var fontsize = 0;
+		switch (skills[i].size) {
+			case 1:
+				fontsize = 60;
+				break;
+			case 2:
+				fontsize = 40;
+				break;
+			case 3:
+				fontsize = 20;
+				break;
+		}
+
+		var x, y, distance = 0;
+		var rect;
+		var count = 0;
+
+		do {
+			count++;
+
+			if (count > 1000) {
+				console.log("Failed to place word");
+				return;
+			}
+
+			x = Math.random() * boxRect.width;
+			y = Math.random() * boxRect.height;
+	
+			var distance = getDistance(center, { x: x, y: y });
+			rect = getRect(skills[i].word, x, y, fontsize);
+			offset(rect, 10, 10);
+		} while (distance > 300 || overlap(rect, placedWords, skills[i].type));
+		
+		placedWords.push({ rect: rect, type: skills[i].type });
+		placeWord(skills[i].word, x, y, fontsize);
+	}
+}
+
 var tr = 0;
 function initWordbox() {
 	tr++;
@@ -31,41 +118,10 @@ function initWordbox() {
 		console.log("Failed to init wordbox");
 		return;
 	}
-
-	const skills = [
-		{type: "plang", word: "C++", size: 1},
-		{type: "plang", word: "C", size: 1},
-		{type: "plang", word: "JAVA", size: 1},
-		{type: "plang", word: "SDL2", size: 1},
-		{type: "lang", word: "Korean", size: 1},
-		{type: "lang", word: "English", size: 1},
-
-		{type: "plang", word: "HTML", size: 2},
-		{type: "plang", word: "CSS", size: 2},
-		{type: "plang", word: "JAVASCRIPT", size: 2},
-		{type: "plang", word: "Node.js", size: 2},
-		{type: "plang", word: "GDI+", size: 2},
-		{type: "plang", word: "Windows API", size: 2},
-		{type: "plang", word: "MFC", size: 2},
-		{type: "plang", word: "MATLAB", size: 2},
-		{type: "lang", word: "Japanese", size: 2},
-		{type: "lang", word: "Chinese", size: 2},
-
-		{type: "plang", word: "IIS", size: 3},
-		{type: "plang", word: "Apache 2", size: 3},
-		{type: "plang", word: "MySQL", size: 3},
-		{type: "plang", word: "PHP", size: 3},
-		{type: "plang", word: "OpenGL", size: 3},
-		{type: "plang", word: "GLSL", size: 3},
-		{type: "plang", word: "Arduino", size: 3},
-
-		{type: "prog", word: "Photoshop", size: 3},
-
-	];
-
+	
 	var wordbox = document.getElementById("wordbox");
 	wordbox.innerHTML = "";
-
+	
 	var wordboxRect = wordbox.getBoundingClientRect();
 	var wordboxWidth = wordboxRect.width;
 	var wordboxHeight = wordboxRect.height;
@@ -82,13 +138,13 @@ function initWordbox() {
 
 		switch(skill.size) {
 			case 1:
-				size = 80;
+				size = 100;
 				break;
 			case 2:
 				size = 40;
 				break;
 			case 3:
-				size = 30;
+				size = 20;
 				break;
 		}
 
@@ -122,10 +178,10 @@ function overlap(rect, rects, type) {
 		var other = rects[i].rect;
 		
 		if (rects[i].type == type) {
-			other = offset(other, word_offset.x, word_offset.y);
+			other = offset(other, word_offset_same.x, word_offset_same.y);
 		}
 		else {
-			other = offset(other, word_offset.x / 4, word_offset.y / 4);
+			other = offset(other, word_offset.x, word_offset.y);
 		}
 
 		if (rect.x < other.x + other.width &&
@@ -139,7 +195,7 @@ function overlap(rect, rects, type) {
 }
 
 function offset(rect, x, y) {
-	return {x: rect.x + x, y: rect.y + y, width: rect.width - x*2, height: rect.height - y*2};
+	return {x: rect.x - x, y: rect.y - y, width: rect.width + x*2, height: rect.height + y*2};
 }
 
 function getRect(word, x, y, size) {
