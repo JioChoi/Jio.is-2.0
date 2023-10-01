@@ -390,39 +390,32 @@ h1 {
 }
 
 #skills {
-	position: relative;
-	display: flex;
+	position: fixed;
+	display: block;
 
-	flex-direction: row;
-
-	-webkit-box-pack: center;
-		-ms-flex-pack: center;
-			justify-content: center;
-	
-	align-items: center;
-
+	top: 0;
+	left: 0;
 
 	width: 100vw;
 	height: 100vh;
 
-	z-index: 100;
+	z-index: 1000;
 }
 
-#wordbox {
-	position: relative;
-	display: block;
-
-	width: 650px;
-	height: 650px;
-}
-
-h3 {
+#skills button {
 	position: absolute;
-	display: block;
+	z-index: 1000;
+}
+
+#skills h1 {
+	position: absolute;
+	display: inline;
 
 	color: white;
-	font-size: 40px;
+	font-size: 120px;
 	font-family: 'SquareFont';
+
+	margin: 10px;
 
 	font-weight: 600;
 }
