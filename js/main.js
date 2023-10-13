@@ -378,12 +378,12 @@ function scrollAnimation() {
 
 	/* Showing Gest! */
 	if (page == 3) {
-		changeBackgroundVideo("videos/gest.mp4", 14.5, [3, 4]);
+		changeBackgroundVideo("videos/gest.mp4", 0, [3, 4]);
 		document.getElementById("video").style.opacity = transition50up;
 	}
 	/* Hiding Gest! */
 	if (page == 4) {
-		changeBackgroundVideo("videos/gest.mp4", 14.5, [3, 4]);
+		changeBackgroundVideo("videos/gest.mp4", 0, [3, 4]);
 		document.getElementById("video").style.opacity = 1 - transition50down;
 	}
 
@@ -402,12 +402,12 @@ function scrollAnimation() {
 
 	/* Showing Nemojump */
 	if (page == 7) {
-		changeBackgroundVideo("videos/nemojump.mp4", 38, [7, 8]);
+		changeBackgroundVideo("videos/nemojump.mp4", 0, [7, 8]);
 		document.getElementById("video").style.opacity = transition50up;
 	}
 	/* Hiding Nemojump */
 	if (page == 8) {
-		changeBackgroundVideo("videos/nemojump.mp4", 38, [7, 8]);
+		changeBackgroundVideo("videos/nemojump.mp4", 0, [7, 8]);
 		document.getElementById("video").style.opacity = 1 - transition50down;
 	}
 
@@ -501,9 +501,11 @@ function scrollAnimation() {
 function changeBackgroundVideo(src, time, pages) {
 	if (pages.indexOf(page) != -1) {
 		if (pages.indexOf(previousPage) == -1) {
+			document.getElementById("video").pause();
 			document.getElementById("video").src = src;
-			document.getElementById("video").currentTime = time;
+			document.getElementById("video").load();
 
+			document.getElementById("video").currentTime = time;
 			document.getElementById("video").play();
 		}
 	}
