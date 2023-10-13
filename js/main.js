@@ -4,11 +4,14 @@ var page = 0;
 var canvas;
 var ctx;
 var deltaEnd = 0;
+var deltaTime = 0;
 
-var particles;
+var sands;
+var particles = [];
 var particleSize = 5;
 
-var spawnInterval;
+var prvSpawnTime = 0;
+var index = 0;
 
 const words = [
 	"C",
@@ -42,6 +45,8 @@ window.onload = function () {
 	addEventListener("scroll", scrollAnimation);
 	scrollAnimation();
 
+	addEventListener("resize", resize);
+
 	// Hide loading screen
 	document.getElementById("loading").classList.add("hidden");
 
@@ -59,11 +64,43 @@ window.onload = function () {
 
 		// Circle brush
 		for(var by = -10; by <= 10; by++) {
-			for(var bx = -10; bx <= 10; bx++) {
-				setParticle(x + bx, y + by, null);
+			for (var bx = -10; bx <= 10; bx++) {
+				var temp = getSand(x + bx, y + by);
+				setSand(x + bx, y + by, null);
+				
+				if (temp != -1 && temp != null && temp != undefined) {
+					spawnParticle(e.clientX + bx * particleSize, e.clientY + by * particleSize, temp.color);
+				}
+				else {
+					//spawnParticle(e.clientX + bx * particleSize, e.clientY + by * particleSize, "#ffffff");
+				}
 			}
 		}
 	});
+}
+
+function resize() {
+	canvas.width = window.innerWidth;
+	canvas.height = window.innerHeight;
+
+	var arrayW = Math.floor(canvas.width / particleSize);
+	var arrayH = Math.floor(canvas.height / particleSize);
+
+	var temp = sands;
+
+	sands = new Array(arrayH);
+	for (var y = 0; y < arrayH; y++) {
+		sands[y] = new Array(arrayW);
+		sands[y].fill(null);
+	}
+
+	for (var y = 0; y < sands.length; y++) {
+		for (var x = 0; x < sands[y].length; x++) {
+			if (x < temp[0].length && y < temp.length) {
+				sands[y][x] = temp[y][x];
+			}
+		}
+	}
 }
 
 function initCanvas() {
@@ -76,68 +113,148 @@ function initCanvas() {
 	var arrayW = Math.floor(canvas.width / particleSize);
 	var arrayH = Math.floor(canvas.height / particleSize);
 
-	particles = new Array(arrayH);
+	sands = new Array(arrayH);
 	for (var y = 0; y < arrayH; y++) {
-		particles[y] = new Array(arrayW);
-		particles[y].fill(null);
+		sands[y] = new Array(arrayW);
+		sands[y].fill(null);
 	}
 	
+	setInterval(spawnSkills, 600);
 	setInterval(update, 1000 / 60);
 	setInterval(render, 1000 / 60);
 }
 
+function spawnSkills() {
+	if (deltaTime > 100) {
+		return;
+	}
+
+	// Spawn sands
+	spawnString(Math.floor(Math.random() * (canvas.width / particleSize)), 0, words[index % words.length]);
+	index++;
+}
+
 function update() {
-	// Update Particles
-	for(var y = particles.length - 1; y >= 0; y--) {
-		for(var x = 0; x < particles[y].length; x++) {
-			if (getParticle(x, y) != null) {
+	deltaTime = Date.now() - deltaEnd;
+	deltaEnd = Date.now();
+
+	if (deltaTime > 100) {
+		return;
+	}
+
+	// Remove old sands
+	for (var y = 0; y < sands.length; y++) {
+		for (var x = 0; x < sands[y].length; x++) {
+			if (getSand(x, y) != null) {
+				if (Date.now() - getSand(x, y).time > 20000) {
+					setSand(x, y, null);
+				}
+			}
+		}
+	}
+
+	// Update sands
+	for(var y = sands.length - 1; y >= 0; y--) {
+		for(var x = 0; x < sands[y].length; x++) {
+			if (getSand(x, y) != null) {
 				// Gravity
-				if (getParticle(x, y + 1) == null) {
-					setParticle(x, y + 1, getParticle(x, y));
-					setParticle(x, y, null);
+				if (getSand(x, y + 1) == null) {
+					setSand(x, y + 1, getSand(x, y));
+					setSand(x, y, null);
 				}
 				else {
-					if (getParticle(x - 1, y + 1) == null && getParticle(x - 1, y) == null) {
-						setParticle(x - 1, y + 1, getParticle(x, y));
-						setParticle(x, y, null);
+					if (getSand(x - 1, y + 1) == null && getSand(x - 1, y) == null) {
+						setSand(x - 1, y + 1, getSand(x, y));
+						setSand(x, y, null);
 					}
-					if (getParticle(x + 1, y + 1) == null && getParticle(x + 1, y) == null) {
-						setParticle(x + 1, y + 1, getParticle(x, y));
-						setParticle(x, y, null);
+					if (getSand(x + 1, y + 1) == null && getSand(x + 1, y) == null) {
+						setSand(x + 1, y + 1, getSand(x, y));
+						setSand(x, y, null);
 					}
 				}
 			}
 		}
+	}
+
+	// Update particles
+	for (var i = 0; i < particles.length; i++) {
+		if (Date.now() - particles[i].time > 500) {
+			particles.splice(i, 1);
+			i--;
+			continue;
+		}
+
+		particles[i].speed += particles[i].acc;
+
+		particles[i].x += Math.cos(particles[i].dir) * particles[i].speed;
+		particles[i].y += Math.sin(particles[i].dir) * particles[i].speed;
 	}
 }
 
 function render() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	for(var y = 0; y < particles.length; y++) {
-		for(var x = 0; x < particles[y].length; x++) {
-			if(getParticle(x, y) != null && getParticle(x, y) != undefined) {
-				ctx.fillStyle = particles[y][x].color;
+	// Render text
+	ctx.globalAlpha = 0.15;
+	ctx.font = "30px Arial";
+	ctx.fillStyle = "#FFFFFF";
+	ctx.textAlign = "center";
+	ctx.textBaseline = "middle";
+	ctx.fillText("CLICK SANDS!", canvas.width / 2, canvas.height / 2);
+
+	ctx.globalAlpha = 1;
+
+	// Render sands
+	for(var y = 0; y < sands.length; y++) {
+		for(var x = 0; x < sands[y].length; x++) {
+			if (getSand(x, y) != null && getSand(x, y) != undefined) {
+				ctx.fillStyle = sands[y][x].color;
 				ctx.fillRect(x * particleSize, y * particleSize, particleSize, particleSize);
 			}
 		}
 	}
+
+	// Render particles
+	for (var i = 0; i < particles.length; i++) {
+		var opacity = Math.max(0, 1 - (Date.now() - particles[i].time) / 500);
+
+		ctx.fillStyle = particles[i].color;
+		ctx.globalAlpha = opacity;
+
+		var x = Math.floor(particles[i].x / particleSize);
+		var y = Math.floor(particles[i].y / particleSize);
+		ctx.fillRect(x * particleSize, y * particleSize, particleSize, particleSize);
+	}
 }
 
-function setParticle(x, y, particle) {
-	if(x < 0 || x >= particles[0].length || y < 0 || y >= particles.length) {
+function setSand(x, y, particle) {
+	if(x < 0 || x >= sands[0].length || y < 0 || y >= sands.length) {
 		return -1;
 	}
 
-	particles[y][x] = particle;
+	sands[y][x] = particle;
 }
 
-function getParticle(x, y) {
-	if(x < 0 || x >= particles[0].length || y < 0 || y >= particles.length) {
+function getSand(x, y) {
+	if(x < 0 || x >= sands[0].length || y < 0 || y >= sands.length) {
 		return -1;
 	}
 
-	return particles[y][x];
+	return sands[y][x];
+}
+
+function spawnParticle(x, y, color) {
+	var particle = {
+		x: x,
+		y: y,
+		dir: Math.random() * Math.PI * 2,
+		speed: Math.random() * 2 + 2,
+		acc: Math.random() * 0.1 + 0.1,
+		color: color,
+		time: Date.now()
+	}
+
+	particles.push(particle);
 }
 
 function spawnString(sx, sy, string) {
@@ -192,10 +309,11 @@ function getGlyphOffset(char) {
 
 function spawn(x, y, color) {
 	var particle = {
-		color: color
+		color: color,
+		time: Date.now()
 	}
 
-	particles[y][x] = particle;
+	sands[y][x] = particle;
 }
 
 function initItems() {
@@ -358,18 +476,17 @@ function scrollAnimation() {
 		document.getElementById("skills-title").style.transform = "translateY(" + (-transition * 15) + "vh)";
 	}
 
+
 	/* Showing Skills */
 	if (page == 19) {
-		document.getElementById("skills").style.opacity = 1;
+		document.getElementById("skills").style.opacity = transition50up;
+		document.getElementById("skills").style.transform = "scale(" + (0.8 + 0.2 * transition50up) + ")";
+	}
 
-		if(spawnInterval != undefined)
-			clearInterval(spawnInterval);
-
-		var index = 0;
-		spawnInterval = setInterval(() => {
-			index++;
-			spawnString(Math.floor(Math.random() * (canvas.width / particleSize)), 0, words[index % words.length]);
-		}, 400);
+	/* Hiding Skills */
+	if (page == 20) {
+		document.getElementById("skills").style.opacity = 1 - transition50down;
+		document.getElementById("skills").style.transform = "scale(" + (1 - 0.2 * transition50down) + ")";
 	}
 
 
