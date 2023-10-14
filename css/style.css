@@ -211,7 +211,7 @@ h1 {
 	z-index: 1000;
 }
 
-#background video {
+#background .video {
 	position: fixed;
 
 	top: 0;

@@ -350,10 +350,14 @@ function scrollAnimation() {
 	/* Default */
 	document.getElementById("intro").style.opacity = 0;
 	document.getElementById("projects-title").style.opacity = 0;
-	document.getElementById("video").style.opacity = 0;
+	document.getElementById("vid1").style.opacity = 0;
+	document.getElementById("vid2").style.opacity = 0;
 	document.getElementById("imgBG").style.opacity = 0;
 	document.getElementById("skills-title").style.opacity = 0;
 	document.getElementById("skills").style.opacity = 0;
+
+	videoManager("vid1", [3, 4]);
+	videoManager("vid2", [7, 8]);
 
 	/* Hiding Intro */
 	if (page == 0) {
@@ -378,13 +382,11 @@ function scrollAnimation() {
 
 	/* Showing Gest! */
 	if (page == 3) {
-		changeBackgroundVideo("videos/gest.mp4", 0, [3, 4]);
-		document.getElementById("video").style.opacity = transition50up;
+		document.getElementById("vid1").style.opacity = transition50up;
 	}
 	/* Hiding Gest! */
 	if (page == 4) {
-		changeBackgroundVideo("videos/gest.mp4", 0, [3, 4]);
-		document.getElementById("video").style.opacity = 1 - transition50down;
+		document.getElementById("vid1").style.opacity = 1 - transition50down;
 	}
 
 
@@ -402,13 +404,11 @@ function scrollAnimation() {
 
 	/* Showing Nemojump */
 	if (page == 7) {
-		changeBackgroundVideo("videos/nemojump.mp4", 0, [7, 8]);
-		document.getElementById("video").style.opacity = transition50up;
+		document.getElementById("vid2").style.opacity = transition50up;
 	}
 	/* Hiding Nemojump */
 	if (page == 8) {
-		changeBackgroundVideo("videos/nemojump.mp4", 0, [7, 8]);
-		document.getElementById("video").style.opacity = 1 - transition50down;
+		document.getElementById("vid2").style.opacity = 1 - transition50down;
 	}
 
 
@@ -489,24 +489,25 @@ function scrollAnimation() {
 		document.getElementById("skills").style.transform = "scale(" + (1 - 0.2 * transition50down) + ")";
 	}
 
-
-	/* Opacity Zero then Pause */
-	if (document.getElementById("video").style.opacity == 0) {
-		document.getElementById("video").pause();
-	}
-
 	previousPage = page;
 }
 
-function changeBackgroundVideo(src, time, pages) {
+function videoManager(id, pages) {
+	var video = document.getElementById(id);
+	var isPlaying = video.currentTime > 0 && !video.paused && !video.ended 
+		&& video.readyState > video.HAVE_CURRENT_DATA;
+	
 	if (pages.indexOf(page) != -1) {
 		if (pages.indexOf(previousPage) == -1) {
-			document.getElementById("video").pause();
-			document.getElementById("video").src = src;
-			document.getElementById("video").load();
-
-			document.getElementById("video").currentTime = time;
-			document.getElementById("video").play();
+			video.currentTime = 0;
+			if(!isPlaying)
+				video.play();
+		}
+	}
+	else {
+		if (isPlaying) {
+			video.pause();
+			console.log(id);
 		}
 	}
 }
