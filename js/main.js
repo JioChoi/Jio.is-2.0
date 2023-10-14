@@ -356,8 +356,8 @@ function scrollAnimation() {
 	document.getElementById("skills-title").style.opacity = 0;
 	document.getElementById("skills").style.opacity = 0;
 
-	videoManager("vid1", [3, 4]);
-	videoManager("vid2", [7, 8]);
+	videoManager("vid1", [3, 4], 0);
+	videoManager("vid2", [7, 8], 0.5);
 
 	/* Hiding Intro */
 	if (page == 0) {
@@ -492,14 +492,14 @@ function scrollAnimation() {
 	previousPage = page;
 }
 
-function videoManager(id, pages) {
+function videoManager(id, pages, time) {
 	var video = document.getElementById(id);
 	var isPlaying = video.currentTime > 0 && !video.paused && !video.ended 
 		&& video.readyState > video.HAVE_CURRENT_DATA;
 	
 	if (pages.indexOf(page) != -1) {
 		if (pages.indexOf(previousPage) == -1) {
-			video.currentTime = 0;
+			video.currentTime = time;
 			if(!isPlaying)
 				video.play();
 		}
@@ -507,7 +507,6 @@ function videoManager(id, pages) {
 	else {
 		if (isPlaying) {
 			video.pause();
-			console.log(id);
 		}
 	}
 }
