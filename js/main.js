@@ -77,6 +77,11 @@ window.onload = function () {
 			}
 		}
 	});
+
+	var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+	if (isSafari) {
+		document.getElementById("down").style.bottom = "0px";
+	}
 }
 
 function resize() {
@@ -356,11 +361,11 @@ function scrollAnimation() {
 	document.getElementById("skills-title").style.opacity = 0;
 	document.getElementById("skills").style.opacity = 0;
 
-	videoManager("vid1", [3, 4], 0);
-	videoManager("vid2", [7, 8], 0.5);
+	videoManager("vid1", [5, 6], 0);
+	videoManager("vid2", [9, 10], 0.5);
 
 	/* Hiding Intro */
-	if (page == 0) {
+	if (page <= 0) {
 		document.getElementById("intro").style.opacity = 1 - transition;
 	}
 
@@ -380,88 +385,99 @@ function scrollAnimation() {
 		document.getElementById("projects-title").style.transform = "translateY(" + (-transition * 15) + "vh)";
 	}
 
-	/* Showing Gest! */
+	/* Showing Patent */
 	if (page == 3) {
+		changeBackgroundImage("images/patent2.jpg", [3, 4]);
+		document.getElementById("imgBG").style.opacity = transition50up;
+	}
+	/* Hiding Patent */
+	if (page == 4) {
+		changeBackgroundImage("images/patent2.jpg", [3, 4]);
+		document.getElementById("imgBG").style.opacity = 1 - transition50down;
+	}
+
+	/* Showing Gest! */
+	if (page == 5) {
 		document.getElementById("vid1").style.opacity = transition50up;
 	}
 	/* Hiding Gest! */
-	if (page == 4) {
+	if (page == 6) {
 		document.getElementById("vid1").style.opacity = 1 - transition50down;
 	}
 
 
 	/* Showing Brakey */
-	if (page == 5) {
-		changeBackgroundImage("images/brakey.png", [5, 6]);
+	if (page == 7) {
+		changeBackgroundImage("images/brakey.png", [7, 8]);
 		document.getElementById("imgBG").style.opacity = transition50up;
 	}
 	/* Hiding Brakey */
-	if (page == 6) {
-		changeBackgroundImage("images/brakey.png", [5, 6]);
+	if (page == 8) {
+		changeBackgroundImage("images/brakey.png", [7, 8]);
 		document.getElementById("imgBG").style.opacity = 1 - transition50down;
 	}
 
 
 	/* Showing Nemojump */
-	if (page == 7) {
+	if (page == 9) {
 		document.getElementById("vid2").style.opacity = transition50up;
 	}
 	/* Hiding Nemojump */
-	if (page == 8) {
+	if (page == 10) {
 		document.getElementById("vid2").style.opacity = 1 - transition50down;
 	}
 
 
 	/* Showing Nodongtime */
-	if (page == 9) {
-		changeBackgroundImage("images/nodong.png", [9, 10]);
+	if (page == 11) {
+		changeBackgroundImage("images/nodong.png", [11, 12]);
 		document.getElementById("imgBG").style.opacity = transition50up;
 	}
 	/* Hiding Nodongtime */
-	if (page == 10) {
-		changeBackgroundImage("images/nodong.png", [9, 10]);
+	if (page == 12) {
+		changeBackgroundImage("images/nodong.png", [11, 12]);
 		document.getElementById("imgBG").style.opacity = 1 - transition50down;
 	}
 
 
 	/* Showing Taglib */
-	if (page == 11) {
-		changeBackgroundImage("images/taglib.png", [11, 12]);
+	if (page == 13) {
+		changeBackgroundImage("images/taglib.png", [13, 14]);
 		document.getElementById("imgBG").style.opacity = transition50up;
 	}
 	/* Hiding Taglib */
-	if (page == 12) {
-		changeBackgroundImage("images/taglib.png", [11, 12]);
+	if (page == 14) {
+		changeBackgroundImage("images/taglib.png", [13, 14]);
 		document.getElementById("imgBG").style.opacity = 1 - transition50down;
 	}
 
 
 	/* Showing Liveboard */
-	if (page == 13) {
-		changeBackgroundImage("images/liveboard.png", [13, 14]);
+	if (page == 15) {
+		changeBackgroundImage("images/liveboard.png", [15, 16]);
 		document.getElementById("imgBG").style.opacity = transition50up;
 	}
 	/* Hiding Liveboard */
-	if (page == 14) {
-		changeBackgroundImage("images/liveboard.png", [13, 14]);
+	if (page == 16) {
+		changeBackgroundImage("images/liveboard.png", [15, 16]);
 		document.getElementById("imgBG").style.opacity = 1 - transition50down;
 	}
 
 
 	/* Showing Relayin' */
-	if (page == 15) {
-		changeBackgroundImage("images/relayin.png", [15, 16]);
+	if (page == 17) {
+		changeBackgroundImage("images/relayin.png", [17, 18]);
 		document.getElementById("imgBG").style.opacity = transition50up;
 	}
 	/* Hiding Relayin' */
-	if (page == 16) {
-		changeBackgroundImage("images/relayin.png", [15, 16]);
+	if (page == 18) {
+		changeBackgroundImage("images/relayin.png", [17, 18]);
 		document.getElementById("imgBG").style.opacity = 1 - transition50down;
 	}
 
 
 	/* Showing Skills Title */
-	if (page == 17) {
+	if (page == 19) {
 		document.getElementById("skills-title").style.opacity = transition50up;
 		type(document.getElementById("skills-title"), transition * 100);
 
@@ -469,7 +485,7 @@ function scrollAnimation() {
 	}
 
 	/* Hiding Skills Title */
-	if (page == 18) {
+	if (page == 20) {
 		type(document.getElementById("skills-title"), 100);
 		document.getElementById("skills-title").style.opacity = 1 - transition50down;
 
@@ -478,13 +494,13 @@ function scrollAnimation() {
 
 
 	/* Showing Skills */
-	if (page == 19) {
+	if (page == 21) {
 		document.getElementById("skills").style.opacity = transition50up;
 		document.getElementById("skills").style.transform = "scale(" + (0.8 + 0.2 * transition50up) + ")";
 	}
 
 	/* Hiding Skills */
-	if (page == 20) {
+	if (page == 22) {
 		document.getElementById("skills").style.opacity = 1 - transition50down;
 		document.getElementById("skills").style.transform = "scale(" + (1 - 0.2 * transition50down) + ")";
 	}
